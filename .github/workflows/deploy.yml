@@ -1,15 +1,4 @@
-name: 🚀 Tarea de Despliegue
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build-and-deploy:
-    name: 🎉 Trabajo de Despliegue
-    runs-on: ubuntu-latest
-
+# ... (parte de arriba igual)
     steps:
       - name: 🚚 Obteniendo el código más reciente
         uses: actions/checkout@v4
@@ -19,25 +8,24 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
+          # Si el package.json está en una subcarpeta, pon la ruta aquí:
+          cache-dependency-path: './CosmicCollector/package-lock.json' 
 
       - name: 📦 Instalando dependencias
+        working-directory: ./CosmicCollector # <--- CAMBIA ESTO por el nombre de tu carpeta
         run: npm install
 
-      - name: 🏗️ Construyendo la aplicación (Generando carpeta dist)
+      - name: 🏗️ Construyendo la aplicación
+        working-directory: ./CosmicCollector # <--- CAMBIA ESTO también
         run: npm run build
 
       - name: 📂 Sincronizando archivos via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ftp-repoclase.alwaysdata.net # Cambia esto por tu servidor de AlwaysData si es distinto
+          server: ftp-repoclase.alwaysdata.net
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: dist/ # IMPORTANTE: Solo subimos lo que está dentro de dist
-          server-dir: www/ # Ajusta la ruta si tu carpeta en AlwaysData es distinta
+          local-dir: ./CosmicCollector/dist/ # <--- Y ESTO
+          server-dir: www/
           protocol: ftps
-          timeout: 86400000
-          log-level: standard
-          exclude: |
-            .git/**
-            .github/**
-            node_modules/**
+# ...
