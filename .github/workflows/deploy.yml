@@ -1,4 +1,15 @@
-# ... (parte de arriba igual)
+name: 🚀 Tarea de Despliegue
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    name: 🎉 Trabajo de Despliegue
+    runs-on: ubuntu-latest
+
     steps:
       - name: 🚚 Obteniendo el código más reciente
         uses: actions/checkout@v4
@@ -8,15 +19,15 @@
         with:
           node-version: 20
           cache: 'npm'
-          # Si el package.json está en una subcarpeta, pon la ruta aquí:
-          cache-dependency-path: './CosmicCollector/package-lock.json' 
+          # Ajustamos la ruta del cache si el proyecto está en una subcarpeta
+          cache-dependency-path: './CosmicCollector/package-lock.json'
 
       - name: 📦 Instalando dependencias
-        working-directory: ./CosmicCollector # <--- CAMBIA ESTO por el nombre de tu carpeta
+        working-directory: ./CosmicCollector
         run: npm install
 
       - name: 🏗️ Construyendo la aplicación
-        working-directory: ./CosmicCollector # <--- CAMBIA ESTO también
+        working-directory: ./CosmicCollector
         run: npm run build
 
       - name: 📂 Sincronizando archivos via FTP
@@ -25,7 +36,13 @@
           server: ftp-repoclase.alwaysdata.net
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./CosmicCollector/dist/ # <--- Y ESTO
+          # Subimos la carpeta dist que está dentro de CosmicCollector
+          local-dir: ./CosmicCollector/dist/
           server-dir: www/
           protocol: ftps
-# ...
+          timeout: 86400000
+          log-level: standard
+          exclude: |
+            .git/**
+            .github/**
+            node_modules/**
