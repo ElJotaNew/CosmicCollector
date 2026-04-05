@@ -4,7 +4,7 @@
 $host = 'mysql-jota.alwaysdata.net'; // Tu MySQL Host
 $dbname = 'jota_cosmictop'; // Tu Database Name
 $username = 'jota';     // Tu MySQL User
-$password = 'tu_password';  // Tu MySQL Password
+$password = 'zQwi42X.wbkmUt2';  // Tu MySQL Password
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
