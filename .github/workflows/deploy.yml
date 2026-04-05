@@ -1,0 +1,43 @@
+name: 🚀 Tarea de Despliegue
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    name: 🎉 Trabajo de Despliegue
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Obteniendo el código más reciente
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Configurando Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Instalando dependencias
+        run: npm install
+
+      - name: 🏗️ Construyendo la aplicación (Generando carpeta dist)
+        run: npm run build
+
+      - name: 📂 Sincronizando archivos via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ftp-repoclase.alwaysdata.net # Cambia esto por tu servidor de AlwaysData si es distinto
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: dist/ # IMPORTANTE: Solo subimos lo que está dentro de dist
+          server-dir: www/ # Ajusta la ruta si tu carpeta en AlwaysData es distinta
+          protocol: ftps
+          timeout: 86400000
+          log-level: standard
+          exclude: |
+            .git/**
+            .github/**
+            node_modules/**
