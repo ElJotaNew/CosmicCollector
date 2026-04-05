@@ -19,25 +19,22 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-          # Buscamos el lock en la subcarpeta
-          cache-dependency-path: 'CosmicCollector/package-lock.json'
+          cache-dependency-path: 'package-lock.json'
 
       - name: 📦 Instalando dependencias
-        working-directory: ./CosmicCollector # <--- Entramos en la carpeta
         run: npm install
 
-      - name: 🏗️ Construyendo la aplicación
-        working-directory: ./CosmicCollector # <--- Entramos en la carpeta
+      - name: 🏗️ Construyendo la aplicación (Generando carpeta dist)
         run: npm run build
 
       - name: 📂 Sincronizando archivos via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ftp-repoclase.alwaysdata.net
+          server: ftp-repoclase.alwaysdata.net # Cambia esto por tu servidor de AlwaysData si es distinto
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./CosmicCollector/dist/ # <--- Subimos la dist de la carpeta
-          server-dir: www/
+          local-dir: dist/ # IMPORTANTE: Solo subimos lo que está dentro de dist
+          server-dir: www/ # Ajusta la ruta si tu carpeta en AlwaysData es distinta
           protocol: ftps
           timeout: 86400000
           log-level: standard
